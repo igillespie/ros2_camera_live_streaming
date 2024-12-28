@@ -1,0 +1,7 @@
+raw_camera_publisher:
+  ros__parameters:
+    fps: 30
+    width: 1280
+    height: 720
+    node_prefix: "camera"
+    codec: "yuv420"

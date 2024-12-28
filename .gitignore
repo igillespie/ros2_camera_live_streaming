@@ -1,0 +1,27 @@
+# ROS 2 workspace build directories
+build/
+install/
+log/
+*.pyc
+__pycache__/
+
+# macOS system files
+.DS_Store
+.AppleDouble
+._*
+
+# VS Code files and directories
+.vscode/
+*.code-workspace
+
+# Node.js dependencies (if applicable for web-related projects)
+node_modules/
+
+# Backup files created by editors
+*~
+*.swp
+*.swo
+
+# Python virtual environments
+env/
+venv/
