@@ -55,7 +55,9 @@ class RawCameraPublisher(Node):
                 '--framerate', str(self.fps),
                 '--nopreview',
                 '--timeout', '0',
-                '--output', '-'
+                '--output', '-',
+                '--vflip',
+                '--hflip'
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,

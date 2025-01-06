@@ -11,15 +11,22 @@ def generate_launch_description():
                 {'width': 1280, 'height': 720, 'fps': 30, 'codec': 'yuv420'}
             ]
         ),
+        # Node(
+        #     package='ros_camera',
+        #     executable='camera_live_streamer',
+        #     name='camera_live_streamer',
+        #     parameters=[
+        #         {'input_topic': '/camera_frames/raw',
+        #          'hls_directory': '/tmp/hls',
+        #          'hls_playlist_name': 'live.m3u8',
+        #          'segment_time': 1.0}
+        #     ]
+        # )
         Node(
             package='ros_camera',
-            executable='camera_live_streamer',
-            name='camera_live_streamer',
+            executable='compressed_image_publisher',
+            name='compressed_image_publisher',
             parameters=[
-                {'input_topic': '/camera_frames/raw',
-                 'hls_directory': '/tmp/hls',
-                 'hls_playlist_name': 'live.m3u8',
-                 'segment_time': 1.0}
             ]
         )
     ])

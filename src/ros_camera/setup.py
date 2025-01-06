@@ -22,6 +22,7 @@ setup(
         'console_scripts': [
             'raw_camera_publisher = nodes.raw_camera_publisher:main',
             'camera_live_streamer = nodes.camera_live_streamer:main',
+            'compressed_image_publisher = nodes.compressed_image_publisher:main',
         ],
     },
 )
