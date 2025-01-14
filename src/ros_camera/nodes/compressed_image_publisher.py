@@ -8,6 +8,15 @@ class CompressedImagePublisher(Node):
     def __init__(self):
         super().__init__('compressed_image_publisher')
 
+        self.declare_parameter('width', 640)
+        self.declare_parameter('height', 360)
+        self.declare_parameter('jpeg_quality', 50)  # Default JPEG quality
+
+        # Retrieve parameters
+        self.width = self.get_parameter('width').value
+        self.height = self.get_parameter('height').value
+        self.jpeg_quality = self.get_parameter('jpeg_quality').value
+
         # Subscriber to the raw YUV420 images
         self.subscription = self.create_subscription(
             Image,
@@ -23,7 +32,19 @@ class CompressedImagePublisher(Node):
             10
         )
 
-        self.get_logger().info("Compressed Image Publisher Node initialized.")
+        # Validate JPEG quality (should be between 0 and 100)
+        if not (0 <= self.jpeg_quality <= 100):
+            self.get_logger().warn(
+                f"Invalid JPEG quality: {self.jpeg_quality}. Clamping to range 0-100."
+            )
+            self.jpeg_quality = max(0, min(self.jpeg_quality, 100))
+
+        self.get_logger().info(
+            f"Compressed Image Publisher Node initialized with dimensions: {self.width}x{self.height}, "
+            f"JPEG quality: {self.jpeg_quality}"
+        )
+
+
 
     def image_callback(self, msg: Image):
         try:
@@ -33,8 +54,11 @@ class CompressedImagePublisher(Node):
             # Decode YUV420 to BGR (OpenCV format)
             bgr_image = cv2.cvtColor(yuv_image, cv2.COLOR_YUV2BGR_I420)
 
-            # Encode BGR image to JPEG
-            success, jpeg_data = cv2.imencode('.jpg', bgr_image, [cv2.IMWRITE_JPEG_QUALITY, 70])
+            # Resize the BGR image to the target dimensions
+            resized_image = cv2.resize(bgr_image, (self.width, self.height), interpolation=cv2.INTER_LINEAR)
+
+            # Encode resized BGR image to JPEG
+            success, jpeg_data = cv2.imencode('.jpg', resized_image, [cv2.IMWRITE_JPEG_QUALITY, self.jpeg_quality])
             if not success:
                 self.get_logger().error("Failed to encode image to JPEG format.")
                 return

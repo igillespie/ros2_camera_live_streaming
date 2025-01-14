@@ -30,7 +30,7 @@ class RawCameraPublisher(Node):
 
        # Initialize attributes
         self.raw_publisher = self.create_publisher(Image, self.topic, 10)
-        self.frame_queue = queue.Queue(maxsize=10)
+        self.frame_queue = queue.Queue(maxsize=50)
         self.stop_event = threading.Event()
         self.pipeline = None  # Initialize pipeline to None
 
@@ -72,7 +72,9 @@ class RawCameraPublisher(Node):
                     continue
                 self.frame_queue.put(data, block=False)
             except queue.Full:
-                self.get_logger().warning("Queue full. Dropping frame.")
+                self.frame_queue.get()  # Remove the oldest frame
+                self.frame_queue.put(data, block=False)
+                self.get_logger().warning("Queue full. Popping old.")
             except Exception as e:
                 self.get_logger().error(f"Error in capture thread: {e}")
 
